@@ -1,0 +1,67 @@
+.App {
+  text-align: center;
+}
+
+.calculator {
+  background-color: #d3d3d3; /* Light grey background for calculator */
+  border-radius: 10px;
+  overflow: hidden; /* To make rounded corners work properly on inner elements */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  width: 300px; /* Adjust as needed */
+}
+
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.display {
+  width: 100%;
+  padding: 20px;
+  font-size: 2.5em;
+  border: none;
+  background-color: #e0e0e0; /* Slightly lighter grey for display */
+}
+
+.buttons{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns of equal width */
+  grid-gap: 8px; /* Example gap size - adjust this value */
+}
+
+.buttons button {
+  padding: 20px;
+  font-size: 1.5em;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+  border-radius: 10%; /* Ensure no button border radius */
+  border-right: 1px solid #ccc; /* Light right border for separation */
+  border-bottom: 1px solid #ccc; /* Light bottom border for separation */
+}
+.buttons button:hover {
+  background-color: orange; /* Slightly darker on hover */
+}
+
+.number {
+  background-color: aquamarine;
+}
+.operator {
+  background-color:rgb(6, 179, 6);
+}
+.operator-onClick {
+  background-color: orange;
+}
+.equal-clear {
+  background-color:cornflowerblue;
+}
+
+.clear {
+  background-color:crimson;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
