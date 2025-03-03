@@ -12,6 +12,7 @@ function updateDisplay() {
     display.value = currentInput;
 }
 
+
 function handleNumberClick(value) {
     if (currentInput === '0' || currentInput === '-0') {
         currentInput = value;
@@ -155,6 +156,9 @@ function handleDecimalClick() {
     }
 }
 
+
+
+//MAIN
 buttons.forEach(button => {
     button.addEventListener('click', function() {
         const value = this.value;

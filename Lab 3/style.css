@@ -52,7 +52,11 @@ body {
 .operator-onClick {
     background-color: orange;
 }
-.equal-clear {
+.equal {
+    background-color:cornflowerblue;
+}
+
+.clear {
     background-color:crimson;
 }
 
