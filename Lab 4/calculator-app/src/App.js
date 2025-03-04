@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 
 import React, {useState } from 'react'
@@ -10,6 +9,8 @@ function Calculator() {
   const [selectedOperator, setSelectedOperator] = useState("");
   const [usedDecimal, setUsedDecimal] = useState(false);
   const [operatorInputted, setOperatorInputted] = useState(null);
+
+  let clickedOperator = null;
 
   const buttons = [
     { value: '7', className: 'number'},
@@ -38,7 +39,7 @@ function Calculator() {
     setResult(' ');
     setUsedDecimal(false);
     setOperatorInputted(false);
-    setSelectedOperator(null);
+    setSelectedOperator("");
   };
 
   const NumberClick = (value) => {
@@ -49,15 +50,15 @@ function Calculator() {
     
     else if ( ['+','-','/','*'].includes(value) ){
       setUsedDecimal(false);
-      setOperatorInputted(true);
+      // setOperatorInputted(true);
       setSelectedOperator(value);
     }
     else{
-      setOperatorInputted(true);
-      setSelectedOperator(null);
+      // setOperatorInputted(true);
+      setSelectedOperator("");
     }
     
-    setInput( (prevInput) => prevInput + value)
+    setInput( (prevInput) => prevInput + value);
   };
 
   const CalcClick = () => {
@@ -65,7 +66,7 @@ function Calculator() {
       const result = eval(input).toString()
       setInput(result);
       setResult(result);
-      setSelectedOperator(null);
+      setSelectedOperator("");
     }
 
     catch (error){
@@ -73,17 +74,19 @@ function Calculator() {
       setResult('');
       setUsedDecimal(false);
       setOperatorInputted(false);
-      setSelectedOperator(null);
+      setSelectedOperator("");
     }
   };
 
   const BuildButtons = () => {
     return buttons.map( (button) => {
       let ClickManager;
-      
-      let buttonClassName = button.className;
-      if(button.value === selectedOperator){
-        buttonClassName += 'operator-onClick';
+
+      if(button.className === 'operator'){
+        if(button.value === selectedOperator){
+          button.className = 'operator-onClick';
+        }
+
       }
 
       if (button.value === '=') {
