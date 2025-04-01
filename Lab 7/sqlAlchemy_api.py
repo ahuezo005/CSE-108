@@ -1,55 +1,45 @@
 from flask import Flask, request, jsonify, send_from_directory
-import json
+from flask_sqlalchemy import SQLAlchemy
 import os
 
-# "searches for html,css,js in this folder"
 app = Flask(__name__, static_folder="static")
 
-#json file to write to
-grades_file = "grades.json"
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'grades.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
+class Grade(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True)
+    grade = db.Column(db.Float)
 
-def initialize_grades():
-    if not os.path.exists(grades_file):
-        with open(grades_file, "w") as f:
-            json.dump({}, f)
+    def __repr__(self):
+        return f"<Grade {self.name} {self.grade}>"
 
-def get_grades():
-    with open(grades_file, "r") as f:
-        return json.load(f)
+#create db table if isn't one
+with app.app_context():
+    db.create_all()
 
-def save_grades(data):
-    with open(grades_file, "w") as f:
-        json.dump(data, f)
-
-initialize_grades()
-
-# home inital page -- get files from static to display
 @app.route("/")
 def index():
     return send_from_directory("static", "gradingWebApp.html")
-
 @app.route('/<path:path>')
 def send_js(path):
     return send_from_directory('static', path)
 
-# methods
 @app.route('/grades', methods=['GET'])
 def get_all_grades():
-    grades = get_grades()
-    return jsonify(grades)
-
-
+    grades = Grade.query.all()
+    grades_all = {grade.name: grade.grade for grade in grades }
+    return jsonify(grades_all)
 @app.route('/grades/<name>', methods=['GET'])
 def get_grade(name):
-    grades = get_grades()
-    if name in grades:
-        return jsonify({name: grades[name]})
-
+    gradeFile = Grade.query.filter_by(name=name).first()
+    if gradeFile:
+        return jsonify({gradeFile.name : gradeFile.grade})
     else:
         return jsonify({"message": "Grade not found :("}), 404
-
-
 @app.route('/grades', methods=['POST'])
 def add_grade():
     data = request.get_json()
@@ -63,54 +53,47 @@ def add_grade():
     try:
         grade = float(grade)
 
-    except:
+    except ValueError:
         return jsonify({"message": "Invalid format for grade"}), 400
 
-    grades = get_grades()
 
-    if name in grades:
+    exists = Grade.query.filter_by(name=name).first()
+    if exists:
         return jsonify({"message": f"Student {name} already exists"}), 400
-
-    grades[name] = grade
-    save_grades(grades)
+    gradeFile = Grade(name=name, grade=grade)
+    db.session.add(gradeFile)
+    db.session.commit()
 
     return jsonify({"message": f"Student {name} added successfully"}), 201
-
-
 @app.route('/grades/<name>', methods=['PUT'])
 def update_grade(name):
-    data = request.get_json()
+    gradeFile = Grade.query.filter_by(name=name).first()
+    if not gradeFile:
+        return jsonify({"message": f"Student {name} not found"}), 404
 
+    data = request.get_json()
     if not data or "grade" not in data:
         return jsonify({"message": "Missing Grade or Name"}), 400
 
     grade = data["grade"]
-
     try:
         grade = float(grade)
     except:
         return jsonify({"message": "Invalid format for grade"}), 400
 
-    grades = get_grades()
-
-    if name not in grades:
-        return jsonify({"message": f"Student {name} not found"}), 404
-
-    grades[name] = grade
-    save_grades(grades)
+    gradeFile.grade = grade
+    db.session.commit()
 
     return jsonify({"message": f"Grade for student {name} updated successfully"})
-
-
 @app.route('/grades/<name>', methods=['DELETE'])
 def delete_grade(name):
-    grades = get_grades()
+    gradeFile = Grade.query.filter_by(name=name).first()
 
-    if name not in grades:
+    if not gradeFile:
         return jsonify({"message": f"Student {name} not found"}), 404
 
-    del grades[name]
-    save_grades(grades)
+    db.session.delete(gradeFile)
+    db.session.commit()
 
     return jsonify({"message": f"Student {name} deleted successfully"})
 
