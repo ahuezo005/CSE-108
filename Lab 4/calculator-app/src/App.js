@@ -1,7 +1,5 @@
 import './App.css';
-
 import React, {useState } from 'react'
-
 
 function Calculator() {
   const [input, setInput] = useState("");
@@ -9,8 +7,6 @@ function Calculator() {
   const [selectedOperator, setSelectedOperator] = useState("");
   const [usedDecimal, setUsedDecimal] = useState(false);
   const [operatorInputted, setOperatorInputted] = useState(null);
-
-  let clickedOperator = null;
 
   const buttons = [
     { value: '7', className: 'number'},
@@ -86,7 +82,6 @@ function Calculator() {
         if(button.value === selectedOperator){
           button.className = 'operator-onClick';
         }
-
       }
 
       if (button.value === '=') {

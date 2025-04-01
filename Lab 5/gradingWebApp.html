@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <title>Grades</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+
+<body>
+    <div class="container">
+        <h1> Grade Book </h1>
+
+        <div class="section">
+            <h2>Search for a Student's Graded</h2>
+            <input type="text" id="getGradeName" placeholder="Enter Student Name">
+            <button onclick="getGrade()">Get Grade</button>
+            <div id="gradeResult"></div>
+        </div>
+
+        <!-- testing -->
+        <div class="section">
+            <h2>View All Students and Grades</h2>
+            <button onclick="toggleGradesTable()">View All Grades</button> <div id="allGrades" class="hidden-table"> 
+                <table id="allGradesTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- testing -->
+
+        <div class="section">
+            <h2>Create New Student File</h2>
+            <input type="text" id="createName" placeholder="Student Name">
+            <input type="number" id="createGrade" placeholder="Grade" step="0.01">
+            <button onclick="createStudent()">Create Student</button>
+            <div id="createResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Edit Existing Grade File </h2>
+            <input type="text" id="editName" placeholder="Student Name">
+            <input type="number" id="editGrade" placeholder="New Grade" step="0.01">
+            <button onclick="editGrade()">Edit Grade</button>
+            <div id="editResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>Delete Student File </h2>
+            <input type="text" id="deleteName" placeholder="Student Name">
+            <button onclick="deleteStudent()">Delete Student</button>
+            <div id="deleteResult"></div>
+        </div>
+        
+    </div>
+
+    <script src="script.js"></script> </body>
+</html>
