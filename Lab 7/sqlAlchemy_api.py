@@ -21,6 +21,7 @@ class Grade(db.Model):
 with app.app_context():
     db.create_all()
 
+
 @app.route("/")
 def index():
     return send_from_directory("static", "gradingWebApp.html")
@@ -30,9 +31,10 @@ def send_js(path):
 
 @app.route('/grades', methods=['GET'])
 def get_all_grades():
-    grades = Grade.query.all()
-    grades_all = {grade.name: grade.grade for grade in grades }
+    gradeFile = Grade.query.all()
+    grades_all = {grade.name: grade.grade for grade in gradeFile  }
     return jsonify(grades_all)
+
 @app.route('/grades/<name>', methods=['GET'])
 def get_grade(name):
     gradeFile = Grade.query.filter_by(name=name).first()
@@ -40,6 +42,7 @@ def get_grade(name):
         return jsonify({gradeFile.name : gradeFile.grade})
     else:
         return jsonify({"message": "Grade not found :("}), 404
+    
 @app.route('/grades', methods=['POST'])
 def add_grade():
     data = request.get_json()
@@ -56,15 +59,15 @@ def add_grade():
     except ValueError:
         return jsonify({"message": "Invalid format for grade"}), 400
 
-
     exists = Grade.query.filter_by(name=name).first()
     if exists:
         return jsonify({"message": f"Student {name} already exists"}), 400
+    
     gradeFile = Grade(name=name, grade=grade)
     db.session.add(gradeFile)
     db.session.commit()
-
     return jsonify({"message": f"Student {name} added successfully"}), 201
+
 @app.route('/grades/<name>', methods=['PUT'])
 def update_grade(name):
     gradeFile = Grade.query.filter_by(name=name).first()
@@ -83,8 +86,8 @@ def update_grade(name):
 
     gradeFile.grade = grade
     db.session.commit()
-
     return jsonify({"message": f"Grade for student {name} updated successfully"})
+
 @app.route('/grades/<name>', methods=['DELETE'])
 def delete_grade(name):
     gradeFile = Grade.query.filter_by(name=name).first()
